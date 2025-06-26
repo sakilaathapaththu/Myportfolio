@@ -1,81 +1,105 @@
+
+
+
+import React, { useEffect, useState } from "react";
 import { Container, Row, Col, Tab, Nav } from "react-bootstrap";
-import { useState } from "react";
 import "animate.css";
 import TrackVisibility from "react-on-screen";
 import colorSharp2 from "../../assets/img/color-sharp2.png";
 import colorSharp from "../../assets/img/color-sharp.png";
+
+import {
+  Timeline,
+  TimelineItem,
+  TimelineSeparator,
+  TimelineConnector,
+  TimelineContent,
+  TimelineDot,
+} from "@mui/lab";
+import { Typography } from "@mui/material";
+import { API_BASE_URL } from "../../utils/constants";
+
 export default function Qualification() {
   const [activeTab, setActiveTab] = useState("education");
+  const [data, setData] = useState({ education: [], certification: [], experience: [] });
 
   const tabs = [
     { id: "education", label: "Education" },
-    { id: "Certifications", label: "Certifications" },
-    { id: "Experience", label: "Experience" },
+    { id: "certification", label: "Certifications" },
+    { id: "experience", label: "Experience" },
   ];
 
-  const data = {
-    education: [
-      {
-        title: "BSc (Hons) in Information Technology Specialising in Information Technology",
-        organization: "SLIIT University",
-        date: "2021 - Present",
-        certificates: true,
-      },
-      {
-        title: "Diploma in English",
-        organization: "BWEA",
-        date: "2020",
-        certificates: true,
-      },
-      {
-        title: "School",
-        organization: "Maliyadeva College",
-        date: "2006 - 2019",
-        certificates: false,
-      },
-    ],
-    Certifications: [
-      {
-        title: "Full-Stack Web Development",
-        organization: "Udemy",
-        date: "2022",
-        certificates: true,
-      },
-      {
-        title: "AI and Machine Learning",
-        organization: "Coursera",
-        date: "2021",
-        certificates: false,
-      },
-    ],
-    Experience: [
-      {
-        title: "Tech Lead Volunteer",
-        organization: "IEEE Student Branch",
-        date: "2020 - 2021",
-        certificates: false,
-      },
-      {
-        title: "Community Event Organizer",
-        organization: "DevCon",
-        date: "2019 - 2020",
-        certificates: true,
-      },
-    ],
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/api/qualifications`)
+      .then((res) => res.json())
+      .then((qualifications) => {
+        const grouped = { education: [], certification: [], experience: [] };
+
+        qualifications.forEach((item) => {
+          const key = item.type.toLowerCase(); // normalize type
+          if (grouped[key]) {
+            grouped[key].push({
+              title: item.title,
+              organization: item.organization,
+              date: `${item.startDate?.slice(0, 7)} - ${item.endDate?.slice(0, 7)}`,
+              startDate: item.startDate,
+              description: item.description,
+              certificateLink: item.certificateLink,
+            });
+          }
+        });
+
+        // Sort by startDate (descending)
+        Object.keys(grouped).forEach((key) => {
+          grouped[key].sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+        });
+
+        setData(grouped);
+      })
+      .catch((err) => console.error("Failed to fetch qualifications", err));
+  }, []);
+
+  const renderTimeline = (type) => {
+    const items = data[type];
+    if (!items || items.length === 0) {
+      return <Typography>No {type} qualifications available.</Typography>;
+    }
+
+     return (
+      <Timeline position="alternate">
+        {items.map((item, index) => (
+          <TimelineItem key={index}>
+            <TimelineSeparator>
+              <TimelineDot />
+              {index < items.length - 1 && <TimelineConnector />}
+            </TimelineSeparator>
+            <TimelineContent>
+              <h4>{item.title}</h4>
+              <p>{item.organization}</p>
+              <p>{item.date}</p>
+
+              {/* Display description for experience */}
+              {type === "experience" && item.description && (
+                <p><strong>Description:</strong> {item.description}</p>
+              )}
+
+              {/* Display certificate link for certification */}
+              {type === "certification" && item.certificateLink && (
+                <p>
+                  <strong>Certificate:</strong>{" "}
+                  <a href={item.certificateLink} target="_blank" rel="noreferrer">
+                    View Certificate
+                  </a>
+                </p>
+              )}
+            </TimelineContent>
+          </TimelineItem>
+        ))}
+      </Timeline>
+    );
   };
 
-  const renderContent = (type) => {
-    return data[type].map((item, index) => (
-      <div key={index} className="qualification-item">
-        <h4>{item.title}</h4>
-        <p>{item.organization}</p>
-        <p>{item.date}</p>
-        {item.certificates && <p>Certificates Available</p>}
-      </div>
-    ));
-  };
-
-  return (
+ return (
     <section className="qualification" id="qualifications">
       <Container>
         <Row>
@@ -96,7 +120,7 @@ export default function Qualification() {
                       <Tab.Content>
                         {tabs.map((tab) => (
                           <Tab.Pane eventKey={tab.id} key={tab.id}>
-                            <Row>{renderContent(tab.id)}</Row>
+                            <Row>{renderTimeline(tab.id)}</Row>
                           </Tab.Pane>
                         ))}
                       </Tab.Content>
@@ -113,3 +137,4 @@ export default function Qualification() {
     </section>
   );
 }
+
