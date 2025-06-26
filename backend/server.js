@@ -38,6 +38,11 @@ app.use("/api/skills", skillRoutes);
 const projectRoutes = require('./routes/projectRoutes.js');
 app.use('/api/projects', projectRoutes);
 
+const authRoutes = require("./routes/authRoutes");
+app.use("/api/auth", authRoutes);
+
+const qualificationRoutes = require("./routes/qualificationRoutes");
+app.use("/api/qualifications", qualificationRoutes);
 
 
 
