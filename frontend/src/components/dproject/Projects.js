@@ -1,188 +1,40 @@
-// import { Container, Row, Col, Tab, Nav } from "react-bootstrap";
-// import ProjectCard from "./ProjectCard.js";
-// import projImg1 from "../../assets/img/project-img1.png";
-// import projImg2 from "../../assets/img/project-img2.png";
-// import projImg3 from "../../assets/img/project-img3.png";
-// import colorSharp2 from "../../assets/img/color-sharp2.png";
-// import 'animate.css';
-// import TrackVisibility from 'react-on-screen';
 
-// export default function Projects() {
-//   const projects = {
-//     php: [
-//       {
-//         title: "PHP Project 1",
-//         description: "Backend Development",
-//         imgUrl: projImg1,
-//       },
-//       {
-//         title: "PHP Project 2",
-//         description: "Web Application",
-//         imgUrl: projImg2,
-//       },
-//     ],
-//     java: [
-//       {
-//         title: "Java Project 1",
-//         description: "Desktop Application",
-//         imgUrl: projImg3,
-//       },
-//       {
-//         title: "Java Project 2",
-//         description: "Backend Development",
-//         imgUrl: projImg1,
-//       },
-//     ],
-//     react: [
-//       {
-//         title: "React Project 1",
-//         description: "Frontend Development",
-//         imgUrl: projImg2,
-//       },
-//       {
-//         title: "React Project 2",
-//         description: "Web Application",
-//         imgUrl: projImg3,
-//       },
-//     ],
-//     mern: [
-//       {
-//         title: "MERN Project 1",
-//         description: "Full-Stack Application",
-//         imgUrl: projImg1,
-//       },
-//       {
-//         title: "MERN Project 2",
-//         description: "E-Commerce Development",
-//         imgUrl: projImg2,
-//       },
-//     ],
-//     springboot: [
-//       {
-//         title: "Spring Boot Project 1",
-//         description: "Microservices Architecture",
-//         imgUrl: projImg3,
-//       },
-//       {
-//         title: "Spring Boot Project 2",
-//         description: "Backend API Development",
-//         imgUrl: projImg1,
-//       },
-//     ],
-//     android: [
-//       {
-//         title: "Android Studio Project 1",
-//         description: "Mobile App Development",
-//         imgUrl: projImg2,
-//       },
-//       {
-//         title: "Android Studio Project 2",
-//         description: "Game Development",
-//         imgUrl: projImg3,
-//       },
-//     ],
-//     laravel: [
-//       {
-//         title: "Laravel Project 1",
-//         description: "CMS Development",
-//         imgUrl: projImg1,
-//       },
-//       {
-//         title: "Laravel Project 2",
-//         description: "E-Commerce Application",
-//         imgUrl: projImg2,
-//       },
-//     ],
-//     flutter: [
-//       {
-//         title: "Flutter Project 1",
-//         description: "Cross-Platform App",
-//         imgUrl: projImg3,
-//       },
-//       {
-//         title: "Flutter Project 2",
-//         description: "UI/UX Focused App",
-//         imgUrl: projImg1,
-//       },
-//     ],
-//     python: [
-//       {
-//         title: "Python ML Project 1",
-//         description: "Machine Learning Model",
-//         imgUrl: projImg2,
-//       },
-//       {
-//         title: "Python ML Project 2",
-//         description: "Data Analysis Toolkit",
-//         imgUrl: projImg3,
-//       },
-//     ],
-//   };
-
-//   return (
-//     <section className="project" id="projects">
-//       <Container>
-//         <Row>
-//           <Col size={12}>
-//             <div className="project-bx">
-//               <TrackVisibility>
-//                 {({ isVisible }) =>
-//                   <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
-//                     <h2>Projects</h2>
-//                     <p>Explore projects categorized by programming languages and frameworks. Click on each tab to view relevant projects.</p>
-//                     <Tab.Container id="projects-tabs" defaultActiveKey="php">
-//                       <Nav variant="pills" className="nav-pills mb-5 justify-content-center align-items-center" id="pills-tab">
-//                         <Nav.Item><Nav.Link eventKey="php">PHP</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="java">Java</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="react">React</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="mern">MERN</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="springboot">Spring Boot</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="android">Android Studio</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="laravel">Laravel</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="flutter">Flutter</Nav.Link></Nav.Item>
-//                         <Nav.Item><Nav.Link eventKey="python">Python with ML</Nav.Link></Nav.Item>
-//                       </Nav>
-//                       <Tab.Content id="slideInUp" className={isVisible ? "animate__animated animate__slideInUp" : ""}>
-//                         {Object.keys(projects).map((category) => (
-//                           <Tab.Pane eventKey={category} key={category}>
-//                             <Row>
-//                               {projects[category].map((project, index) => (
-//                                 <ProjectCard key={index} {...project} />
-//                               ))}
-//                             </Row>
-//                           </Tab.Pane>
-//                         ))}
-//                       </Tab.Content>
-//                     </Tab.Container>
-//                   </div>}
-//               </TrackVisibility>
-//             </div>
-//           </Col>
-//         </Row>
-//       </Container>
-//       <img className="background-image-right" src={colorSharp2} alt="background" />
-//     </section>
-//   );
-// }
 import { useState, useEffect } from 'react';
 import { Container, Row, Col, Tab, Nav } from 'react-bootstrap';
 import ProjectCard from './ProjectCard.js';
 import 'animate.css';
 import TrackVisibility from 'react-on-screen';
 import axios from 'axios';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import { API_BASE_URL } from "../../utils/constants.js";
+import { AiOutlineClose } from "react-icons/ai"; // ✅ Close icon
 
 export default function Projects() {
   const [projects, setProjects] = useState({});
   const [loading, setLoading] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProject, setSelectedProject] = useState(null);
 
   useEffect(() => {
-    // Fetch data from your backend
     axios.get(`${API_BASE_URL}/api/projects/fetch`)
       .then(response => {
-        const projectsData = response.data;
-        const categorizedProjects = categorizeProjects(projectsData);
-        setProjects(categorizedProjects);
+        const categorized = {};
+        response.data.forEach(project => {
+          if (!Array.isArray(project.language)) return;
+          project.language.forEach(lang => {
+            if (!categorized[lang]) categorized[lang] = [];
+            categorized[lang].push({
+              title: project.title,
+              shortDescription: project.shortDescription,
+              fullDescription: project.fullDescription,
+              demoVideo: project.demoVideo,
+              images: project.images.map(img => `${API_BASE_URL}/${img}`),
+              language: project.language
+            });
+          });
+        });
+        setProjects(categorized);
         setLoading(false);
       })
       .catch(error => {
@@ -191,28 +43,17 @@ export default function Projects() {
       });
   }, []);
 
-  // Function to categorize projects based on their language
-  const categorizeProjects = (projectsData) => {
-    const categorized = {};
-
-    projectsData.forEach(project => {
-      const { language } = project;
-      if (!categorized[language]) {
-        categorized[language] = [];
-      }
-      categorized[language].push({
-        title: project.title,
-        description: project.shortDescription,
-        imgUrl: `${API_BASE_URL}/${project.images[0]}`,  // Construct the full image URL
-      });
-    });
-
-    return categorized;
+  const handleCardClick = (project) => {
+    setSelectedProject(project);
+    setShowModal(true);
   };
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setSelectedProject(null);
+  };
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <section className="project" id="projects">
@@ -224,21 +65,21 @@ export default function Projects() {
                 {({ isVisible }) =>
                   <div className={isVisible ? "animate__animated animate__fadeIn" : ""}>
                     <h2>Projects</h2>
-                    <p>Explore projects categorized by programming languages and frameworks. Click on each tab to view relevant projects.</p>
-                    <Tab.Container id="projects-tabs" defaultActiveKey="php">
-                      <Nav variant="pills" className="nav-pills mb-5 justify-content-center align-items-center" id="pills-tab">
+                    <p>Explore projects categorized by languages and frameworks.</p>
+                    <Tab.Container defaultActiveKey={Object.keys(projects)[0]}>
+                      <Nav variant="pills" className="nav-pills mb-5 justify-content-center">
                         {Object.keys(projects).map(language => (
                           <Nav.Item key={language}>
                             <Nav.Link eventKey={language}>{language}</Nav.Link>
                           </Nav.Item>
                         ))}
                       </Nav>
-                      <Tab.Content id="slideInUp" className={isVisible ? "animate__animated animate__slideInUp" : ""}>
-                        {Object.keys(projects).map((category) => (
-                          <Tab.Pane eventKey={category} key={category}>
+                      <Tab.Content>
+                        {Object.keys(projects).map((lang) => (
+                          <Tab.Pane eventKey={lang} key={lang}>
                             <Row>
-                              {projects[category].map((project, index) => (
-                                <ProjectCard key={index} {...project} />
+                              {projects[lang].map((project, index) => (
+                                <ProjectCard key={index} {...project} onClick={() => handleCardClick(project)} />
                               ))}
                             </Row>
                           </Tab.Pane>
@@ -251,6 +92,63 @@ export default function Projects() {
           </Col>
         </Row>
       </Container>
+
+      {/* ✅ Modal Popup with Close Icon */}
+      {showModal && selectedProject && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, width: "100%", height: "100%",
+          background: "rgba(0,0,0,0.8)", zIndex: 9999,
+          display: "flex", justifyContent: "center", alignItems: "center"
+        }}>
+          <div style={{
+            background: "#fff", borderRadius: "8px", padding: "20px", maxWidth: "800px", width: "95%",
+            maxHeight: "90vh", overflowY: "auto", position: "relative"
+          }}>
+            {/* Close Icon */}
+            <button onClick={handleCloseModal} style={{
+              position: "absolute", top: "0px", right: "15px",
+              background: "transparent", border: "none", cursor: "pointer", color: "#333"
+            }} title="Close">
+              <AiOutlineClose size={24} />
+            </button>
+
+            {/* Carousel */}
+            <Carousel
+  responsive={{ all: { breakpoint: { max: 4000, min: 0 }, items: 1 } }}
+  infinite
+  autoPlay
+  autoPlaySpeed={2500}
+  showDots
+  arrows={false}
+>
+  {selectedProject.images.map((img, i) => (
+    <a key={i} href={img} target="_blank" rel="noopener noreferrer">
+      <img
+        src={img}
+        alt={`slide-${i}`}
+        style={{ width: "100%", height: "300px", objectFit: "cover", cursor: "zoom-in" }}
+      />
+    </a>
+  ))}
+</Carousel>
+
+
+            {/* Project Details */}
+            <h3 className="mt-3">{selectedProject.title}</h3>
+            <p><strong>Short Description:</strong> {selectedProject.shortDescription}</p>
+            {selectedProject.fullDescription && (
+              <p><strong>Full Description:</strong> {selectedProject.fullDescription}</p>
+            )}
+            {selectedProject.demoVideo && (
+              <p>
+                <strong>Demo Video:</strong>{" "}
+                <a href={selectedProject.demoVideo} target="_blank" rel="noreferrer">Watch</a>
+              </p>
+            )}
+            <p><strong>Languages:</strong> {selectedProject.language.join(", ")}</p>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
