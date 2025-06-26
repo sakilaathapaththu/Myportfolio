@@ -1,7 +1,7 @@
 const express = require("express");
 const multer = require("multer");
 const Skill = require("../models/skillModel");
-const { addSkill } = require("../controllers/skillsController");
+const { addSkill, deleteSkill } = require("../controllers/skillsController");
 
 const router = express.Router();
 
@@ -38,4 +38,6 @@ router.get("/", async (req, res) => {
       res.status(500).json({ message: "Error fetching skills", error: err });
     }
   });
+  // DELETE: Delete a skill by ID
+router.delete("/:id", deleteSkill); // Add this route
 module.exports = router;
