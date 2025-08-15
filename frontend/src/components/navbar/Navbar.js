@@ -63,7 +63,7 @@ export default function NavBar() {
                  <button className="vvd"><span>CV</span></button>
             </HashLink> */}
             <a
-              href="https://drive.google.com/uc?export=download&id=14Wo0f0U68w0IMhV8Dq5HdKHM4BnCCsGR"
+              href="https://drive.google.com/file/d/1KuALcBIV3KMuxILERgvEKpUmXCmR9epB/view?usp=sharing"
               target="_blank"
               rel="noopener noreferrer"
               download
